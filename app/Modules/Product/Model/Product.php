@@ -61,4 +61,14 @@ class Product extends Model
         $this->price = $newPrice;
         $this->category = $newCategory;
     }
+
+    public function toReadModel():ProductReadModel
+    {
+        return  new ProductReadModel(
+            $this->title,
+            $this->price,
+            $this->category,
+            $this->quantity
+        );
+    }
 }

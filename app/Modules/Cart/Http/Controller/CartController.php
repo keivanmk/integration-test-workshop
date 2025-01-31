@@ -2,6 +2,7 @@
 
 namespace App\Modules\Cart\Http\Controller;
 
+use App\Modules\Cart\Model\Cart;
 use App\Modules\Product\Model\Product;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
@@ -21,7 +22,20 @@ readonly class CartController
     public function add(Request $request,int $productId):JsonResponse
     {
         $product = Product::find($productId);
-        return  $this->responseFactory->json([]);
+        $guestId = $request->header('token');
+        $cart = Cart::query()->where('guest_id',$guestId)->first();
+        if(!$cart)
+        {
+            $cart = Cart::forGuest($guestId);
+            $cart->save();
+        }
+
+        $cart->addProduct($product);
+
+        return  $this->responseFactory->json([
+            'success' => true,
+            'message' => 'محصول با موفقیت به سبد خرید اضافه شد'
+        ]);
     }
 
 }

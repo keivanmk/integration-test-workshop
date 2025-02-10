@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  *@property int $cart_id
  *@property int $product_id
+ *@property Product $product
  *@property int $price
  *@property int $quantity
  *@property string $title
@@ -41,8 +43,18 @@ class CartItem extends Model
         return $this->belongsTo(Cart::class);
     }
 
+    public function product():HasOne
+    {
+        return $this->hasOne(Product::class);
+    }
+
     public function increaseQuantity(int $amount = 1):void
     {
         $this->increment('quantity',$amount);
+    }
+
+    public function subTotal():int
+    {
+        return  $this->price * $this->quantity;
     }
 }

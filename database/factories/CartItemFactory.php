@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Modules\Cart\Model\Cart;
 use App\Modules\Cart\Model\CartItem;
 use App\Modules\Product\Model\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -20,11 +21,11 @@ class CartItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'product_id' => 0,
-            'cart_id' => 0,
+            'product_id' => Product::factory(),
+            'cart_id' => Cart::factory(),
             'title' => $this->faker->word(),
-            'price' => 100,
-            'quantity' => 1
+            'price' => $this->faker->randomElement([100_000,200_000,300_000,400_000,500_000]),
+            'quantity' => $this->faker->randomDigitNotZero()
         ];
     }
 

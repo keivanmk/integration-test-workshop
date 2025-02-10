@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Cart\Http\Controller\CartController;
+use App\Modules\Order\Http\Controllers\PlaceOrderController;
 use App\Modules\Product\Http\Controllers\FilterProductsController;
 use App\Modules\Product\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,11 @@ Route::prefix('cart')
         Route::post('/add/{id}',[CartController::class,'add'])
             ->name('add')
             ->whereNumber('id');
+    });
+
+Route::prefix('order')
+    ->name('order.')
+    ->group(function (){
+        Route::post('/place',PlaceOrderController::class)
+            ->name('place');
     });

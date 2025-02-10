@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 /**
  * @property int $user_id
  * @property string $guest_id
+ * @property \Illuminate\Database\Eloquent\Collection $items
  */
 class Cart extends Model
 {
@@ -42,7 +43,6 @@ class Cart extends Model
         return $cart;
     }
 
-
     public function addProduct(Product $product):void
     {
         /** @var CartItem $existingItem */
@@ -55,5 +55,10 @@ class Cart extends Model
         }
 
         $this->items()->save(CartItem::add($product));
+    }
+
+    public function total():int
+    {
+        return $this->items->reduce(fn($total,CartItem $cartItem) => $total += $cartItem->subTotal(),0);
     }
 }

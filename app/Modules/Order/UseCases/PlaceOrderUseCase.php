@@ -4,6 +4,7 @@ namespace App\Modules\Order\UseCases;
 
 use App\Modules\Cart\Model\Cart;
 use App\Modules\Cart\Model\CartItem;
+use App\Modules\Order\Contracts\TaxProviderInterface;
 use App\Modules\Order\Events\OrderPlaced;
 use App\Modules\Order\Mails\OrderPlacedMail;
 use App\Modules\Order\Model\Order;
@@ -16,7 +17,8 @@ readonly class PlaceOrderUseCase
 
 
     public function __construct(
-        private Dispatcher $eventDispatcher
+        private Dispatcher $eventDispatcher,
+        private TaxProviderInterface $taxProvider
     )
     {
     }
@@ -27,6 +29,7 @@ readonly class PlaceOrderUseCase
         $order = Order::place($cart->guest_id);
         $order->save();
         $order->addItems($orderItems);
+        $order->applyTax($this->taxProvider->rate());
         $order->save();
 
         $this->eventDispatcher->dispatch(new OrderPlaced($order));
